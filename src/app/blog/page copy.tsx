@@ -30,11 +30,10 @@ import {
 } from '@/redux/features/blog/blogSlice';
 import {appDispatch, useAppSelector} from '@/redux/app/store';
 import {toast} from 'react-toastify';
-import AddBlog from './add-blog';
-import DeleteUI from './delete-ui';
+
 
 // Zod schema
-export const blogsDataSchema = z.object({
+const blogsDataSchema = z.object({
   name: z.string().min(1, {message: 'Required'}),
 });
 
@@ -43,7 +42,6 @@ export const initSingleBlogData: initSingleBlogDataType = {
   title: 'Blog title',
   id: 0,
 };
-export type blogsDataSubmitType = z.infer<typeof blogsDataSchema>;
 
 export default function Home() {
   const [blogsData, setBlogsData] =
@@ -60,6 +58,7 @@ export default function Home() {
   };
 
   // create form by using zod and react-hook-form
+  type blogsDataSubmitType = z.infer<typeof blogsDataSchema>;
   const {
     register,
     handleSubmit,
@@ -162,7 +161,25 @@ export default function Home() {
 
   // Delete UI
   if (currentRender === 'delete') {
-    renderUI = <DeleteUI data={{handleCancel, setCurrentRender, blogsData}} />;
+    renderUI = (
+      <main className="min-h-screen flex items-center justify-center flex-col gap-4">
+        <div className="border min-w-[400px] min-h-[400px] rounded-lg p-4 relative">
+          <div className="flex items-center justify-between">
+            <h2 className="text-center">Delete the Blog.</h2>
+            <div className="cursor-pointer" onClick={handleCancel}>
+              <RxCross2 />
+            </div>
+          </div>
+          <h2 className="text-2xl font-light">{blogsData.title}</h2>
+          <button
+            onClick={onDelete}
+            type="button"
+            className="bg-rose-400 px-4 py-2 cursor-pointer rounded-lg uppercase absolute bottom-4 right-4">
+            Delete
+          </button>
+        </div>
+      </main>
+    );
   }
 
   // Update UI
@@ -195,8 +212,33 @@ export default function Home() {
 
   // Add UI
   if (currentRender === 'add') {
-    renderUI = <AddBlog data={{handleCancel, setCurrentRender}} />;
+    renderUI = (
+      <main className="min-h-screen flex items-center justify-center flex-col gap-4">
+        <div className="border min-w-[400px] min-h-[400px] rounded-lg p-4 relative">
+          <div className="flex items-center justify-between">
+            <h2 className="text-center uppercase">Add Blog</h2>
+            <div className="cursor-pointer" onClick={handleCancel}>
+              <RxCross2 />
+            </div>
+          </div>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <h3 className="text-sm  mt-8">Blog Name:</h3>
+            <input
+              {...register('name')}
+              className="bg-transparent border rounded-lg px-4 py-2 w-full"
+            />
+            {errors.name?.message && (
+              <p className="text-rose-400">{errors.name?.message}</p>
+            )}
+            <input
+              type="submit"
+              value="Add Blog"
+              className="bg-green-400 px-4 py-2 rounded-lg uppercase cursor-pointer absolute bottom-4 right-4"
+            />
+          </form>
+        </div>
+      </main>
+    );
   }
   return renderUI;
 }
-
