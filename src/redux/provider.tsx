@@ -1,3 +1,11 @@
+/*
+|-----------------------------------------
+| setting up Redux Provider for the App
+| @author: Toufiquer Rahman<toufiquer.0@gmail.com>
+| @copyright: Toufiquer, February, 2024
+|-----------------------------------------
+*/
+
 'use client';
 
 import {store} from '@/redux/app/store';

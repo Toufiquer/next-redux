@@ -4,6 +4,9 @@ import "./globals.css";
 import {ReduxProvider} from '@/redux/provider';
 import Link from 'next/link';
 
+  import {ToastContainer, toast} from 'react-toastify';
+  import 'react-toastify/dist/ReactToastify.css';
+  
 const inter = Inter({subsets: ['latin']});
 
 export const metadata: Metadata = {
@@ -34,6 +37,7 @@ export default function RootLayout({
           </ul>
         </nav>
         <ReduxProvider>{children}</ReduxProvider>
+        <ToastContainer />
       </body>
     </html>
   );

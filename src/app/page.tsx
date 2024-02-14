@@ -57,7 +57,17 @@ export default function Home() {
   // when add or update(edit)
   const onSubmit = (data: userSubmitType) => {
     console.log(data);
+    console.log(currentRender);
     setCurrentRender('');
+    // for add 
+    if (currentRender === 'add') {
+      // do your code
+    }
+
+    // For Update or Edit 
+    if (currentRender === 'edit') {
+      // do your code
+    }
   };
 
   const onDelete = () => {

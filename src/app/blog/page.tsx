@@ -17,30 +17,40 @@ import {useState} from 'react';
 import {LuTrash} from 'react-icons/lu';
 import {RxCross2} from 'react-icons/rx';
 import {useForm} from 'react-hook-form';
+import {useDispatch, useSelector} from 'react-redux';
 import {FaRegEdit} from 'react-icons/fa';
 
 import {zodResolver} from '@hookform/resolvers/zod';
 
-const storeBlogsData: {title: string; id: number}[] = [];
-for (let i = 1; i <= 10; i++) {
-  storeBlogsData.push({
-    title: `Name ${i}`,
-    id: i,
-  });
-}
+import {
+  addBlog,
+  deleteAllBlog,
+  removeBlog,
+  updateBlog,
+} from '@/redux/features/blog/blogSlice';
+import {appDispatch, useAppSelector} from '@/redux/app/store';
+import {toast} from 'react-toastify';
+
 
 // Zod schema
 const blogsDataSchema = z.object({
   name: z.string().min(1, {message: 'Required'}),
 });
 
-type initSingleBlogDataType = {title: string; id: number};
-const initSingleBlogData: initSingleBlogDataType = {title: 'Blog title', id: 0};
+export type initSingleBlogDataType = {title: string; id: number};
+export const initSingleBlogData: initSingleBlogDataType = {
+  title: 'Blog title',
+  id: 0,
+};
 
 export default function Home() {
   const [blogsData, setBlogsData] =
     useState<initSingleBlogDataType>(initSingleBlogData);
   const [currentRender, setCurrentRender] = useState<string>('');
+  const {data: globalStoreBlog} = useAppSelector(state => state.blogs);
+
+  // create dispatch for dispatch function
+  const dispatch = useDispatch<appDispatch>();
 
   const handleCancel = () => {
     setBlogsData(initSingleBlogData);
@@ -63,10 +73,50 @@ export default function Home() {
   const onSubmit = (data: blogsDataSubmitType) => {
     console.log(data);
     setCurrentRender('');
+
+    const getLatestId = (): number =>
+      globalStoreBlog.reduce(
+        (acc, curr) => (curr.id > acc ? curr.id + 1 : acc),
+        0,
+      );
+
+    // For add
+    if (currentRender === 'add') {
+      // do your code
+      // dispatch function to add blog to store
+      dispatch(
+        addBlog({
+          id: getLatestId(),
+          title: data.name,
+        }),
+      );
+
+      toast.success('Blog Add Success');
+    }
+
+    // For Update or Edit
+    if (currentRender === 'edit') {
+      // do your code
+      dispatch(
+        updateBlog({
+          id: blogsData.id,
+          title: data.name,
+        }),
+      );
+
+      toast.success('Blog Update Success');
+    }
   };
 
   const onDelete = () => {
     console.log('data will delete', blogsData.title);
+    dispatch(
+      removeBlog({
+        id: blogsData.id,
+        title: blogsData.title,
+      }),
+    );
+    toast.success('Blog Delete Success');
     setCurrentRender('');
   };
 
@@ -81,7 +131,7 @@ export default function Home() {
           Add new Blog
         </button>
       </div>
-      {storeBlogsData.map(curr => (
+      {globalStoreBlog.map(curr => (
         <div key={curr.id} className="border p-2 rounded-lg px-4 min-w-[320px]">
           <div className="flex gap-4 items-center justify-between">
             <h2 className="text-2xl">
@@ -124,7 +174,7 @@ export default function Home() {
           <button
             onClick={onDelete}
             type="button"
-            className="bg-rose-400 px-4 py-2 rounded-lg uppercase absolute bottom-4 right-4">
+            className="bg-rose-400 px-4 py-2 cursor-pointer rounded-lg uppercase absolute bottom-4 right-4">
             Delete
           </button>
         </div>
@@ -152,7 +202,7 @@ export default function Home() {
             />
             <input
               type="submit"
-              className="bg-green-400 px-4 py-2 rounded-lg uppercase absolute bottom-4 right-4"
+              className="bg-green-400 px-4 py-2 cursor-pointer rounded-lg uppercase absolute bottom-4 right-4"
             />
           </form>
         </div>
@@ -183,7 +233,7 @@ export default function Home() {
             <input
               type="submit"
               value="Add Blog"
-              className="bg-green-400 px-4 py-2 rounded-lg uppercase absolute bottom-4 right-4"
+              className="bg-green-400 px-4 py-2 rounded-lg uppercase cursor-pointer absolute bottom-4 right-4"
             />
           </form>
         </div>

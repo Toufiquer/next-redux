@@ -11,7 +11,7 @@
  * */
 
 'use client';
-
+ 
 import {z} from 'zod';
 import {useState} from 'react';
 import {LuTrash} from 'react-icons/lu';
@@ -34,8 +34,8 @@ const postsDataSchema = z.object({
   name: z.string().min(1, {message: 'Required'}),
 });
 
-type initSinglePostDataType = {title: string; id: number};
-const initSinglePostData: initSinglePostDataType = {title: 'Post title', id: 0};
+export type initSinglePostDataType = {title: string; id: number};
+export const initSinglePostData: initSinglePostDataType = {title: '', id: 0};
 
 export default function Home() {
   const [postData, setPostData] =
@@ -63,6 +63,15 @@ export default function Home() {
   const onSubmit = (data: postsDataSubmitType) => {
     console.log(data);
     setCurrentRender('');
+    // For add
+    if (currentRender === 'add') {
+      // do your code
+    }
+
+    // For Update or Edit
+    if (currentRender === 'edit') {
+      // do your code
+    }
   };
 
   const onDelete = () => {
