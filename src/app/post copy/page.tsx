@@ -20,15 +20,14 @@ import {useForm} from 'react-hook-form';
 import {FaRegEdit} from 'react-icons/fa';
 
 import {zodResolver} from '@hookform/resolvers/zod';
-import {useGetPostsQuery} from '@/redux/features/post/postApi';
 
-// const storePostsData: {title: string; id: number}[] = [];
-// for (let i = 1; i <= 10; i++) {
-//   storePostsData.push({
-//     title: `Name ${i}`,
-//     id: i,
-//   });
-// }
+const storePostsData: {title: string; id: number}[] = [];
+for (let i = 1; i <= 10; i++) {
+  storePostsData.push({
+    title: `Name ${i}`,
+    id: i,
+  });
+}
 
 // Zod schema
 const postsDataSchema = z.object({
@@ -43,12 +42,6 @@ export default function Home() {
     useState<initSinglePostDataType>(initSinglePostData);
   const [currentRender, setCurrentRender] = useState<string>('');
 
-  const {
-    data: storePostsData = [],
-    isLoading,
-    isError,
-    error,
-  } = useGetPostsQuery({});
   const handleCancel = () => {
     setPostData(initSinglePostData);
     setCurrentRender('');

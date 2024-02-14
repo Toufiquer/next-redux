@@ -7,6 +7,11 @@
 */
 
 // If you want to update store then this file help you to update
+
+/**
+ * $ This file is part redux store. Not rtk-query. Also it is not using api
+ * */
+
 import {initSingleBlogDataType} from '@/app/blog/page';
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 

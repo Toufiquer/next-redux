@@ -13,6 +13,7 @@ import {apiSlice} from './../features/api/apiSlice';
 import usersSlice from './../features/users/usersSlice';
 import {TypedUseSelectorHook, useSelector} from 'react-redux';
 import blogSlice from '../features/blog/blogSlice';
+import postSlice from '../features/post/postSlice';
 
 export const store = configureStore({
   reducer: {
