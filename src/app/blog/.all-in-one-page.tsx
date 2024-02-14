@@ -7,7 +7,7 @@
 */
 
 /**
- * $ This file is part of rtk-query. It manages cache
+ * $ This file is part redux store. Not rtk-query. Also it is not using api
  * */
 
 'use client';
@@ -17,7 +17,7 @@ import {useState} from 'react';
 import {LuTrash} from 'react-icons/lu';
 import {RxCross2} from 'react-icons/rx';
 import {useForm} from 'react-hook-form';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import {FaRegEdit} from 'react-icons/fa';
 
 import {zodResolver} from '@hookform/resolvers/zod';
@@ -30,7 +30,6 @@ import {
 } from '@/redux/features/blog/blogSlice';
 import {appDispatch, useAppSelector} from '@/redux/app/store';
 import {toast} from 'react-toastify';
-
 
 // Zod schema
 const blogsDataSchema = z.object({

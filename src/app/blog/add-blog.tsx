@@ -10,8 +10,6 @@
  * $ This file is part redux store. Not rtk-query. Also it is not using api
  * */
 
-'use client';
-
 import {toast} from 'react-toastify';
 import {RxCross2} from 'react-icons/rx';
 import {useForm} from 'react-hook-form';
@@ -29,24 +27,29 @@ export default function AddBlog({
   data,
 }: {
   data: {
+    register: any;
+    handleSubmit: any;
+    formState: any;
     handleCancel: () => void;
     setCurrentRender: Dispatch<SetStateAction<string>>;
   };
 }) {
   const {data: globalStoreBlog} = useAppSelector(state => state.blogs);
-  const {handleCancel, setCurrentRender} = data || {};
+  const {handleCancel, setCurrentRender, handleSubmit, register, formState} =
+    data || {};
+  const {errors} = formState || {};
 
   // create dispatch for dispatch a function
   const dispatch = useDispatch<appDispatch>();
 
   // create form by using zod and react-hook-form
-  const {
-    register,
-    handleSubmit,
-    formState: {errors},
-  } = useForm<blogsDataSubmitType>({
-    resolver: zodResolver(blogsDataSchema),
-  });
+  // const {
+  //   register,
+  //   handleSubmit,
+  //   formState: {errors},
+  // } = useForm<blogsDataSubmitType>({
+  //   resolver: zodResolver(blogsDataSchema),
+  // });
 
   // when add
   const onSubmit = (data: blogsDataSubmitType) => {

@@ -6,11 +6,10 @@
 |-----------------------------------------
 */
 
+
 /**
  * $ This file is part redux store. Not rtk-query. Also it is not using api
  * */
-
-'use client';
 
 import {toast} from 'react-toastify';
 import {RxCross2} from 'react-icons/rx';
