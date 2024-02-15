@@ -23,7 +23,9 @@ import {zodResolver} from '@hookform/resolvers/zod';
 import {
   useAddPostMutation,
   useDeletePostMutation,
+  useEditPostMutation,
   useGetPostsQuery,
+  useUpdatePostMutation,
 } from '@/redux/features/post/postApi';
 import Loading from './loading';
 import Error from './error';
@@ -54,6 +56,7 @@ export default function Home() {
   const [deletePost, {isLoading: deleteLoading, isSuccess}] =
     useDeletePostMutation();
   const [addPost, {isLoading: addLoading, AddIsSuccess}] = useAddPostMutation();
+  const [updatePost] = useEditPostMutation();
 
   const handleCancel = () => {
     setPostData(initSinglePostData);
@@ -79,12 +82,13 @@ export default function Home() {
     // For add
     if (currentRender === 'add') {
       // do your code
-      addPost({id: postData.id, name: data.name});
+      addPost({id: postData.id, title: data.name});
     }
 
     // For Update or Edit
     if (currentRender === 'edit') {
       // do your code
+      updatePost({id: postData.id, title: data.name});
     }
   };
 
@@ -105,31 +109,36 @@ export default function Home() {
           Add new Post
         </button>
       </div>
-      {firstLoadPostsData.map(curr => (
-        <div key={curr.id} className="border p-2 rounded-lg px-4 min-w-[320px]">
-          <div className="flex gap-4 items-center justify-between">
-            <h2 className="text-2xl">
-              <span className="font-extrabold">Name:</span> {curr.title}
-            </h2>
-            <div className="flex gap-4 items-center">
-              <FaRegEdit
-                className="w-[25px] h-[25px] text-green-500 cursor-pointer"
-                onClick={() => {
-                  setCurrentRender('edit');
-                  setPostData({id: curr.id, title: curr.title});
-                }}
-              />
-              <LuTrash
-                className="w-[25px] h-[25px] text-rose-500 cursor-pointer"
-                onClick={() => {
-                  setCurrentRender('delete');
-                  setPostData({id: curr.id, title: curr.title});
-                }}
-              />
+
+      <div className="w-full grid grid-cols-3 gap-4 px-4 md:grid-cols-2">
+        {firstLoadPostsData.map(curr => (
+          <div
+            key={curr.id}
+            className="border p-2 rounded-lg px-4 min-w-[320px]">
+            <div className="flex gap-4 items-center justify-between">
+              <h2 className="text-2xl">
+                <span className="font-extrabold">Name:</span> {curr.title}
+              </h2>
+              <div className="flex gap-4 items-center">
+                <FaRegEdit
+                  className="w-[25px] h-[25px] text-green-500 cursor-pointer"
+                  onClick={() => {
+                    setCurrentRender('edit');
+                    setPostData({id: curr.id, title: curr.title});
+                  }}
+                />
+                <LuTrash
+                  className="w-[25px] h-[25px] text-rose-500 cursor-pointer"
+                  onClick={() => {
+                    setCurrentRender('delete');
+                    setPostData({id: curr.id, title: curr.title});
+                  }}
+                />
+              </div>
             </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </main>
   );
 

@@ -1,39 +1,39 @@
 import type {NextApiRequest, NextApiResponse} from 'next';
 
 // data is likely database;
-const postData: {title: string; id: number}[] = [];
+const assignmentData: {title: string; id: number}[] = [];
 for (let i = 1; i <= 20; i++) {
-  postData.push({
-    title: `Post ${i}`,
+  assignmentData.push({
+    title: `Assignment ${i}`,
     id: i,
   });
 }
 
 // update database functionality
-export const getAllDataSTR = () => JSON.stringify(postData);
+export const getAllDataSTR = () => JSON.stringify(assignmentData);
 export const addData = (str: string) => {
-  postData.push({
+  assignmentData.push({
     title: `${str}`,
-    id: postData.length,
+    id: assignmentData.length,
   });
 };
 export const deleteData = (id: number) => {
-  const others = postData.filter(
+  const others = assignmentData.filter(
     i => parseInt(i.id + '') !== parseInt(id + ''),
   );
-  postData.length = 0;
-  postData.push(...others);
+  assignmentData.length = 0;
+  assignmentData.push(...others);
 };
 export const updateData = (id: number, str: string) => {
-  const others = postData.map(i => {
+  const others = assignmentData.map(i => {
     const result = {...i};
     if (id === result.id) {
       result.title = str;
     }
     return result;
   });
-  postData.length = 0;
-  postData.push(...others);
+  assignmentData.length = 0;
+  assignmentData.push(...others);
 };
 
 export async function GET(req: NextApiRequest, res: NextApiResponse) {
@@ -41,10 +41,9 @@ export async function GET(req: NextApiRequest, res: NextApiResponse) {
 }
 export async function POST(req: NextApiRequest, res: NextApiResponse) {
   const data = req.body.data;
-  console.log(data);
   addData(data);
   return new Response(
-    JSON.stringify({data: 'POST || Add successfully', status: 200}),
+    JSON.stringify({data: 'Assignment || Add successfully', status: 200}),
   );
 }
 
@@ -53,7 +52,7 @@ export async function PUT(req: NextApiRequest, res: NextApiResponse) {
   const id = req.body.id;
   const data = req.body.data;
   updateData(id, data);
-  return new Response('PUT ||  post update successfully');
+  return new Response('PUT ||  Assignment update successfully');
 }
 
 // only change particular data not change all data
@@ -68,5 +67,5 @@ export async function DELETE(req: NextApiRequest, res: NextApiResponse) {
   const id = req.body.id;
   console.log(id);
   deleteData(id);
-  return new Response('DELETE || post deleted successfully');
+  return new Response('DELETE || Assignment deleted successfully');
 }

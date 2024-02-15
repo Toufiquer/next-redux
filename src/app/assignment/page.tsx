@@ -20,14 +20,18 @@ import {useForm} from 'react-hook-form';
 import {FaRegEdit} from 'react-icons/fa';
 
 import {zodResolver} from '@hookform/resolvers/zod';
+import {
+  useAddAssignmentMutation,
+  useGetAssignmentsQuery,
+} from '@/redux/features/assignment/assignmentApi';
 
-const initAssignmentData: {title: string; id: number}[] = [];
-for (let i = 1; i <= 10; i++) {
-  initAssignmentData.push({
-    title: `Assignment ${i}`,
-    id: i,
-  });
-}
+// const initAssignmentData: {title: string; id: number}[] = [];
+// for (let i = 1; i <= 10; i++) {
+//   initAssignmentData.push({
+//     title: `Assignment ${i}`,
+//     id: i,
+//   });
+// }
 
 // Zod schema
 const assignmentDataSchema = z.object({
@@ -44,6 +48,15 @@ export default function Home() {
   const [assignmentData, setAssignmentData] =
     useState<initSingleAssignmentDataType>(initSingleAssignmentData);
   const [currentRender, setCurrentRender] = useState<string>('');
+
+  const {
+    data: getAssignmentData,
+    isLoading,
+    isError,
+    error,
+  } = useGetAssignmentsQuery({});
+
+  const [addAssignment, {}] = useAddAssignmentMutation();
 
   const handleCancel = () => {
     setAssignmentData(initSingleAssignmentData);
@@ -69,6 +82,7 @@ export default function Home() {
     // For add
     if (currentRender === 'add') {
       // do your code
+      addAssignment({id: 1212, name: 'The new assignment from page.tsx'});
     }
 
     // For Update or Edit
@@ -93,31 +107,35 @@ export default function Home() {
           Add new Assignment
         </button>
       </div>
-      {initAssignmentData.map(curr => (
-        <div key={curr.id} className="border p-2 rounded-lg px-4 min-w-[320px]">
-          <div className="flex gap-4 items-center justify-between">
-            <h2 className="text-2xl">
-              <span className="font-extrabold">Name:</span> {curr.title}
-            </h2>
-            <div className="flex gap-4 items-center">
-              <FaRegEdit
-                className="w-[25px] h-[25px] text-green-500 cursor-pointer"
-                onClick={() => {
-                  setCurrentRender('edit');
-                  setAssignmentData({id: curr.id, title: curr.title});
-                }}
-              />
-              <LuTrash
-                className="w-[25px] h-[25px] text-rose-500 cursor-pointer"
-                onClick={() => {
-                  setCurrentRender('delete');
-                  setAssignmentData({id: curr.id, title: curr.title});
-                }}
-              />
+      <div className="w-full grid grid-cols-3 md:grid-cols-2 px-4 gap-4">
+        {getAssignmentData?.map(curr => (
+          <div
+            key={curr.id}
+            className="border p-2 rounded-lg px-4 min-w-[320px]">
+            <div className="flex gap-4 items-center justify-between">
+              <h2 className="text-2xl">
+                <span className="font-extrabold">Name:</span> {curr.title}
+              </h2>
+              <div className="flex gap-4 items-center">
+                <FaRegEdit
+                  className="w-[25px] h-[25px] text-green-500 cursor-pointer"
+                  onClick={() => {
+                    setCurrentRender('edit');
+                    setAssignmentData({id: curr.id, title: curr.title});
+                  }}
+                />
+                <LuTrash
+                  className="w-[25px] h-[25px] text-rose-500 cursor-pointer"
+                  onClick={() => {
+                    setCurrentRender('delete');
+                    setAssignmentData({id: curr.id, title: curr.title});
+                  }}
+                />
+              </div>
             </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </main>
   );
 

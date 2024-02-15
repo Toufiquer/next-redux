@@ -42,31 +42,35 @@ export default function InitRender({
           Add new Blog
         </button>
       </div>
-      {globalStoreBlog.map(curr => (
-        <div key={curr.id} className="border p-2 rounded-lg px-4 min-w-[320px]">
-          <div className="flex gap-4 items-center justify-between">
-            <h2 className="text-2xl">
-              <span className="font-extrabold">Name:</span> {curr.title}
-            </h2>
-            <div className="flex gap-4 items-center">
-              <FaRegEdit
-                className="w-[25px] h-[25px] text-green-500 cursor-pointer"
-                onClick={() => {
-                  setCurrentRender('edit');
-                  setBlogsData({id: curr.id, title: curr.title});
-                }}
-              />
-              <LuTrash
-                className="w-[25px] h-[25px] text-rose-500 cursor-pointer"
-                onClick={() => {
-                  setCurrentRender('delete');
-                  setBlogsData({id: curr.id, title: curr.title});
-                }}
-              />
+      <div className="w-full grid grid-cols-3 md:grid-cols-2 px-4 gap-4">
+        {globalStoreBlog.map(curr => (
+          <div
+            key={curr.id}
+            className="border p-2 rounded-lg px-4 min-w-[320px]">
+            <div className="flex gap-4 items-center justify-between">
+              <h2 className="text-2xl">
+                <span className="font-extrabold">Name:</span> {curr.title}
+              </h2>
+              <div className="flex gap-4 items-center">
+                <FaRegEdit
+                  className="w-[25px] h-[25px] text-green-500 cursor-pointer"
+                  onClick={() => {
+                    setCurrentRender('edit');
+                    setBlogsData({id: curr.id, title: curr.title});
+                  }}
+                />
+                <LuTrash
+                  className="w-[25px] h-[25px] text-rose-500 cursor-pointer"
+                  onClick={() => {
+                    setCurrentRender('delete');
+                    setBlogsData({id: curr.id, title: curr.title});
+                  }}
+                />
+              </div>
             </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </main>
   );
 }

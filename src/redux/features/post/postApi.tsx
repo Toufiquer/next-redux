@@ -45,36 +45,58 @@ export const postsApi = apiSlice.injectEndpoints({
       },
     }),
     editPost: builder.mutation({
-      query: ({id, data}) => ({
-        url: `/posts/${id}`,
+      query: arg => ({
+        url: `/posts/${arg.id}`,
         method: 'PATCH',
-        body: {...data},
+        body: arg,
       }),
 
       async onQueryStarted(arg, {queryFulfilled, dispatch}) {
+        console.log(' patch query started', arg);
+        const patchResult = dispatch(
+          apiSlice.util.updateQueryData('getPosts', {}, draft => {
+            console.log('post draft : ', JSON.stringify(draft));
+            const others = draft.map(curr => {
+              let result = {...curr};
+              if (parseInt(curr.id) === parseInt(arg.id)) {
+                result.title = arg.title;
+              }
+              return result;
+            });
+            Object.assign(draft, others);
+          }),
+        );
+        try {
+          await queryFulfilled;
+        } catch {
+          patchResult.undo();
+        }
+
         try {
           const query = await queryFulfilled;
           // pessimistic cache update start
-          if (query?.data?.id) {
-            dispatch(
-              apiSlice.util.updateQueryData(
-                'getPosts',
-                undefined,
-                (draft: initSinglePostDataType[]) => {
-                  const newValue = draft.map(curr => {
-                    if (+curr.id === arg.id) {
-                      return {...query?.data};
-                    } else {
-                      return curr;
-                    }
-                  });
-                  Object.assign(draft, newValue);
-                },
-              ),
-            );
-          }
+          // if (query?.data?.id) {
+          //   dispatch(
+          //     apiSlice.util.updateQueryData(
+          //       'getPosts',
+          //       {},
+          //       (draft: initSinglePostDataType[]) => {
+          //         const newValue = draft.map(curr => {
+          //           if (+curr.id === +arg.id) {
+          //             return {...query?.data};
+          //           } else {
+          //             return curr;
+          //           }
+          //         });
+          //         Object.assign(draft, newValue);
+          //       },
+          //     ),
+          //   );
+          // }
           // pessimistic cache update end
-        } catch {}
+        } catch {
+          patchResult.undo();
+        }
       },
     }),
     deletePost: builder.mutation({
@@ -83,17 +105,14 @@ export const postsApi = apiSlice.injectEndpoints({
         method: 'DELETE',
       }),
 
-      /** ! Working on it start ****/
       async onQueryStarted(arg, {dispatch, queryFulfilled}) {
-        // `updateQueryData` requires the endpoint name and cache key arguments,
-        // so it knows which piece of cache state to update
         const patchResult = dispatch(
-          apiSlice.util.updateQueryData('getPosts', undefined, draft => {
-            // The `draft` is Immer-wrapped and can be "mutated" like in createSlice
-            const post = draft.data.find(
-              post => parseInt(post.id) === parseInt(arg),
-            );
-            Object.assign(draft, post);
+          apiSlice.util.updateQueryData('getPosts', {}, draft => {
+            console.log('post draft : ', JSON.stringify(draft));
+            const others = draft.filter(curr => {
+              return parseInt(curr.id) !== parseInt(arg);
+            });
+            Object.assign(draft, others);
           }),
         );
         try {
@@ -102,37 +121,6 @@ export const postsApi = apiSlice.injectEndpoints({
           patchResult.undo();
         }
       },
-      /** ! Working on it end  ****/
-
-      // async onQueryStarted(arg, {queryFulfilled, dispatch}) {
-      //   // optimistic cache update start
-      //   console.log('inside delet mutation');
-      //   console.log('arg: ', arg);
-      //   const patchResult1 = dispatch(
-      //     apiSlice.util.updateQueryData('getPosts', undefined, draft => {
-      //       const newValue = draft.filter(
-      //         curr => parseInt(curr.id + '') !== parseInt(arg + ''),
-      //       );
-      //       return Object.assign(draft, {
-      //         data: [{title: 'nothing is left', id: 9}],
-      //       });
-      //     }),
-      //   );
-      //   // optimistic cache update end
-      //   console.log('outside :', patchResult1);
-
-      //   try {
-      //     const {data} = await queryFulfilled;
-      //     dispatch(
-      //       apiSlice.util.updateQueryData('getPosts', undefined, draft =>
-      //         draft.push({title: 'asynd', id: 500}),
-      //       ),
-      //     );
-      //   } catch {
-      //     console.log('error happen :', patchResult1);
-      //     patchResult1.undo();
-      //   }
-      // },
     }),
 
     addPost: builder.mutation({
@@ -142,37 +130,17 @@ export const postsApi = apiSlice.injectEndpoints({
         body: data,
       }),
 
-      /* Start */
-
-      async onCacheEntryAdded(
-        arg,
-        {updateCachedData, cacheDataLoaded, cacheEntryRemoved},
-      ) {
-        updateCachedData(draft => {
-          draft.push({title: 'from cache update', id: 1212});
-        });
+      async onQueryStarted(arg, {queryFulfilled, dispatch}) {
+        dispatch(
+          apiSlice.util.updateQueryData('getPosts', {}, draft => {
+            draft.push({title: arg.title, id: 120});
+          }),
+        );
+        try {
+          await queryFulfilled;
+          // pessimistic cache update end
+        } catch {}
       },
-
-      /* second part*/
-      // async onQueryStarted(arg, {queryFulfilled, dispatch}) {
-      //   // debugger;
-      //   try {
-      //     const query = await queryFulfilled;
-      //     console.log('post add : ', query);
-      //     console.log('post arg : ', arg);
-      //     // pessimistic cache update start
-      //     if (query?.data?.id) {
-      //       dispatch(
-      //         apiSlice.util.updateQueryData('getPosts', undefined, draft =>
-      //           draft.push({title: arg.name, id: 120}),
-      //         ),
-      //       );
-      //     }
-      //     // pessimistic cache update end
-      //   } catch {}
-      // },
-
-      /* End */
     }),
   }),
 });
