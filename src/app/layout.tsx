@@ -34,6 +34,9 @@ export default function RootLayout({
             <li>
               <Link href="/blog">Blog</Link>
             </li>
+            <li>
+              <Link href="/assignment">Assignment</Link>
+            </li>
           </ul>
         </nav>
         <ReduxProvider>{children}</ReduxProvider>
