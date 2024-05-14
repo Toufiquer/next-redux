@@ -11,7 +11,7 @@
  * */
 
 'use client';
- 
+
 import {z} from 'zod';
 import {useState} from 'react';
 import {LuTrash} from 'react-icons/lu';
@@ -51,6 +51,7 @@ export default function Home() {
     error: firstError = '' as string,
   } = useGetPostsQuery({});
 
+  console.log('query data : ', firstLoadPostsData);
   // delete singe post
 
   const [deletePost, {isLoading: deleteLoading, isSuccess}] =
@@ -111,7 +112,7 @@ export default function Home() {
       </div>
 
       <div className="w-full grid grid-cols-3 gap-4 px-4 md:grid-cols-2">
-        {firstLoadPostsData.map(curr => (
+        {/* {firstLoadPostsData?.map(curr => (
           <div
             key={curr.id}
             className="border p-2 rounded-lg px-4 min-w-[320px]">
@@ -137,7 +138,7 @@ export default function Home() {
               </div>
             </div>
           </div>
-        ))}
+        ))} */}
       </div>
     </main>
   );
